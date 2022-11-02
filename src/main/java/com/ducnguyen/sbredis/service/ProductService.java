@@ -1,6 +1,7 @@
 package com.ducnguyen.sbredis.service;
 
 import com.ducnguyen.sbredis.dto.ProductDto;
+import com.ducnguyen.sbredis.dto.request.ProductAddRequest;
 import com.ducnguyen.sbredis.dto.request.ProductSearchRequest;
 
 import java.util.List;
@@ -13,4 +14,8 @@ public interface ProductService {
     void updateProduct(ProductDto productDto);
 
     List<ProductDto> searchProduct(ProductSearchRequest productSearchRequest);
+
+    void addProduct(ProductAddRequest productAddRequest);
+
+    List<ProductDto> findAll();
 }

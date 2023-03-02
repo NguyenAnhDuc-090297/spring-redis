@@ -5,6 +5,10 @@ spring:
   redis:
     host: localhost
     port: 6379
+    database: 0
+    username: default
+    password: 123456aA@
+    timeout: 30000
 
   datasource:
     url: jdbc:mysql://localhost:3306/test

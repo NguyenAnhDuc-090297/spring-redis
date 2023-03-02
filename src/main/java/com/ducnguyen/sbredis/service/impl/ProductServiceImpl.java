@@ -16,8 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -42,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
             // Cache hit
             Optional<CacheData> optionalCacheData = cacheDataRepository.findById(String.valueOf(id));
             if (optionalCacheData.isPresent()) {
-                String productStr = optionalCacheData.get().getValue();
+                String productStr = (String) optionalCacheData.get().getValue();
                 TypeReference<ProductDto> mapType = new TypeReference<>() {
                 };
                 return Optional.ofNullable(objectMapper.readValue(productStr, mapType));
@@ -65,6 +64,39 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Map<String, String> getProduct2(long id) {
+        try {
+            // Cache hit
+            ObjectMapper mapper = new ObjectMapper();
+            Optional<CacheData> optionalCacheData = cacheDataRepository.findById(String.valueOf(id));
+            if (optionalCacheData.isPresent()) {
+                String productStr = (String) optionalCacheData.get().getValue();
+                TypeReference<Map<String, String>> mapType = new TypeReference<>() {
+                };
+                return mapper.readValue(productStr, mapType);
+            }
+
+            // Cache miss
+            ProductDto productDto = this.productRepository.findById(id).map(this::entityToDto)
+                    .orElseThrow(() -> new NullPointerException("productDto is null"));
+
+//            String productAsString = objectMapper.writeValueAsString(productDto);
+            Map<String, String> productAsString = new HashMap<>();
+            productAsString.put("id", "1");
+            productAsString.put("description", "the desc");
+            productAsString.put("price", "5");
+            CacheData cacheData = new CacheData(String.valueOf(id), mapper.writeValueAsString(productAsString));
+            cacheDataRepository.save(cacheData);
+
+            return productAsString;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return null;
+    }
+
+    @Override
     public void updateProduct(ProductDto productDto) {
         this.productRepository.findById(productDto.getId())
                 .map(product -> this.setQuantityAvailable(product, productDto))
@@ -82,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
             Optional<CacheData> optionalCacheData = cacheDataRepository.findById(cacheKey);
             TypeReference<List<ProductDto>> mapType = new TypeReference<>() {};
             if (optionalCacheData.isPresent()) {
-                String productListAsString = optionalCacheData.get().getValue();
+                String productListAsString = (String) optionalCacheData.get().getValue();
 
                 return objectMapper.readValue(productListAsString, mapType);
             }
@@ -130,7 +162,7 @@ public class ProductServiceImpl implements ProductService {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             // Cache hit
             if (optionalCacheData.isPresent()) {
-                String allProductsAsString = optionalCacheData.get().getValue();
+                String allProductsAsString = (String) optionalCacheData.get().getValue();
 
                 return objectMapper.readValue(allProductsAsString, mapType);
             }

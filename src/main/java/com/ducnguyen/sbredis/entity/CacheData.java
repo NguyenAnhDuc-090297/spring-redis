@@ -19,5 +19,5 @@ public class CacheData {
     private String key;
 
     @Indexed
-    private String value;
+    private Object value;
 }

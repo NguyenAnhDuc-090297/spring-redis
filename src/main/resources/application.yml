@@ -7,7 +7,7 @@ spring:
     port: 6379
     database: 0
     username: default
-    password: 123456aA@
+    password: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     timeout: 30000
 
   datasource:

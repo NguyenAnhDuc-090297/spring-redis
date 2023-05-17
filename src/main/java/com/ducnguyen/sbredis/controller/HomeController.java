@@ -2,7 +2,6 @@ package com.ducnguyen.sbredis.controller;
 
 import com.ducnguyen.sbredis.dto.request.NearestItemsRequest;
 import com.ducnguyen.sbredis.service.impl.HandleNearestItemsImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +18,7 @@ public class HomeController {
     }
 
     @PostMapping("/cache-nearest")
-    public void addCache(@RequestBody NearestItemsRequest request) throws JsonProcessingException {
+    public void addCache(@RequestBody NearestItemsRequest request) {
         handleNearestItems.handleNearestItem(request);
     }
 }
